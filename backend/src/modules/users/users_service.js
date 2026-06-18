@@ -107,7 +107,7 @@ class UsersService{
 
         const deletedUser = await usersRepository.deleteById(
             targetId
-        ),
+        );
 
         if(!deletedUser){
             throw new Error('Failed to delete user');
