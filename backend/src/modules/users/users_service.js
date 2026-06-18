@@ -116,3 +116,5 @@ class UsersService{
         return true;
     }
 }
+
+module.exports = new UsersService();

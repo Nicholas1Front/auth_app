@@ -13,3 +13,5 @@ class AuthRepository{
         return user;
     }
 }
+
+modul.exports = new AuthRepository();

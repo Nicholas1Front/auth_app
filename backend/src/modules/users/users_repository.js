@@ -59,3 +59,5 @@ class UsersRepository{
         return true;
     }
 }
+
+module.exports = new UsersRepository();
