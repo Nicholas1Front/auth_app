@@ -5,7 +5,7 @@ const {
     updateUserSchema
 } = require('./users_schema');
 
-class AuthController{
+class UsersController{
     async register(req,res){
         try{
             const data = registerSchema.parse(req.body);
@@ -29,7 +29,21 @@ class AuthController{
         }
     }
     async update(req,res){
-        try{}catch(err){
+        try{
+            let data = updateUserSchema.parse(req.body);
+
+            const user = await usersService.update({
+                targetId : req.params.id,
+                requesterId : req.user.id,
+                userData : data
+            })
+
+            return res.status(200).json({
+                message : 'User updated successfully',
+                data : user
+            })
+
+        }catch(err){
             return res.status(400).json({
                 message : "Failed to update user",
                 error : `${err.code} - ${err.message}`
@@ -57,4 +71,4 @@ class AuthController{
     }
 }
 
-module.exports = new AuthController();
+module.exports = new UsersController();

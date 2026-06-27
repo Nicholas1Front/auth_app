@@ -55,13 +55,19 @@ class UsersService{
         }
 
         if(userData.email !== undefined){
+            if(userData.email === findUser[0].email){
+                throw new Error('The email is the same as before');
+            }
+
             const findEmail = await usersRepository.find({
                 email : userData.email
-            })
+            });
 
             if(findEmail.length > 0 && findEmail[0].id !== targetId){
                 throw new Error('Email already in use');
             }
+
+            userData.email = userData.email.toLowerCase();
         }
 
         if(userData.password !== undefined){
