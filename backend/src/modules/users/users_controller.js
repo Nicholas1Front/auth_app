@@ -1,6 +1,6 @@
 const usersService = require('./users_service');
 const {
-    registerSchema,
+    registerUserSchema,
     findUserSchema,
     updateUserSchema
 } = require('./users_schema');
@@ -8,7 +8,7 @@ const {
 class UsersController{
     async register(req,res){
         try{
-            const data = registerSchema.parse(req.body);
+            const data = registerUserSchema.parse(req.body);
 
             const user = await usersService.register({
                 name : data.name,

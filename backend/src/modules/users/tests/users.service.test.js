@@ -27,7 +27,7 @@ describe('usersService register', ()=>{
     });
 })
 
-describe('usersService update', async()=>{
+describe('usersService update', ()=>{
     it('should not allow a user update another user', async () =>{
         await expect(
             usersService.update({
@@ -73,7 +73,68 @@ describe('usersService update', async()=>{
                 userData : {
                     password : '123456'
                 }
-            }).rejects.toThrow('The password is the same as before')
-        )
+            })
+        ).rejects.toThrow('The password is the same as before')
+    })
+
+    it('should not allow updating with same email', async()=>{
+        usersRepository.find.mockResolvedValue([
+            {
+                id : 1,
+                email : 'teste@gmail.com'
+            }
+        ]);
+
+        await expect(
+            usersService.update({
+                targetId : 1,
+                requesterId : 1,
+                userData : {
+                    email : 'teste@gmail.com'
+                }
+            })
+        ).rejects.toThrow('The email is the same as before')
+    })
+});
+
+describe('usersService delete', ()=>{
+    it('should not allow a user delete another user', async()=>{
+        await expect(
+            usersService.delete({
+                targetId : 1,
+                requesterId : 2
+            })
+        ).rejects.toThrow('Unauthorized access');
+    });
+
+    it('should not find a user while deleting', async()=>{
+        usersRepository.find.mockResolvedValue([]);
+
+        await expect(
+            usersService.delete({
+                targetId : 1,
+                requesterId : 1
+            })
+        ).rejects.toThrow('User not found');
+    });
+
+    it('should delete a user', async()=>{
+        usersRepository.find.mockResolvedValue([
+            {
+                id : 1,
+                name : 'Nick',
+                email : 'teste@gmail.com',
+                address : 'Rua 45, Fortaleza'
+            }
+        ]);
+
+        usersRepository.deleteById.mockResolvedValue(true)
+
+        await expect(
+            usersService.delete({
+                targetId : 1,
+                requesterId : 1
+            })
+        ).resolves.toBe(true);
     })
 })

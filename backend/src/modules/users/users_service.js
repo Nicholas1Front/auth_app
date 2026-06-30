@@ -63,7 +63,7 @@ class UsersService{
                 email : userData.email
             });
 
-            if(findEmail.length > 0 && findEmail[0].id !== targetId){
+            if(findEmail.length > 0){
                 throw new Error('Email already in use');
             }
 
@@ -109,6 +109,14 @@ class UsersService{
     }){
         if(requesterId !== targetId){
             throw new Error('Unauthorized access');
+        }
+
+        const findUser = await usersRepository.find({
+            id : targetId
+        });
+
+        if(findUser.length === 0){
+            throw new Error('User not found');
         }
 
         const deletedUser = await usersRepository.deleteById(
