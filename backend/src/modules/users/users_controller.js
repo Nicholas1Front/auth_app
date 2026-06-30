@@ -1,7 +1,6 @@
 const usersService = require('./users_service');
 const {
     registerUserSchema,
-    findUserSchema,
     updateUserSchema
 } = require('./users_schema');
 
@@ -24,7 +23,7 @@ class UsersController{
         }catch(err){
             return res.status(400).json({
                 message : "Failed to register user",
-                error : `${err.code} - ${err.message}`
+                error : err.message
             })
         }
     }
@@ -46,7 +45,7 @@ class UsersController{
         }catch(err){
             return res.status(400).json({
                 message : "Failed to update user",
-                error : `${err.code} - ${err.message}`
+                error : err.message
             })
         }
     }
@@ -65,7 +64,7 @@ class UsersController{
         }catch(err){
             return res.status(400).json({
                 message : "Failed to delete user",
-                error : `${err.code} - ${err.message}`
+                error : err.message
             })
         }
     }
