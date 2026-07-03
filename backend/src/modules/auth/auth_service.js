@@ -43,7 +43,7 @@ class AuthService{
     async me(id){
         const user = await authRepository.findById(id);
 
-        if(!user){
+        if(!user || user.length === 0){
             throw new Error('User not found');
         }
 
