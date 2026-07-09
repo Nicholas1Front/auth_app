@@ -16,7 +16,7 @@ class UsersController{
                 password : data.password
             });
 
-            return res.status(201).json({
+            return res.status(200).json({
                 message : "User registered successfully",
                 data : user
             })
@@ -32,7 +32,7 @@ class UsersController{
             let data = updateUserSchema.parse(req.body);
 
             const user = await usersService.update({
-                targetId : req.params.id,
+                targetId : Number(req.params.id),
                 requesterId : req.user.id,
                 userData : data
             })
