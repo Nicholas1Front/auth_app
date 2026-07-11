@@ -24,7 +24,7 @@ class UsersRepository{
         email,
         name
     }){
-        const query = knex('users').select('*');
+        const query = knex('users');
 
         if(id !== null){
             query.where('id', id);
