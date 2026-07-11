@@ -53,7 +53,7 @@ class UsersController{
     async delete(req,res){
         try{
             await usersService.delete({
-                targetId : req.params.id,
+                targetId : Number(req.params.id),
                 requesterId : req.user.id
             })
 

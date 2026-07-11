@@ -1,5 +1,4 @@
 const usersService = require('../../modules/users/users_service');
-const usersRepository = require('../../modules/users/users_repository');
 
 const request = require('supertest');
 const app = require('../../app');
@@ -8,7 +7,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 jest.mock('../../modules/users/users_service');
-jest.mock('../../modules/users/users_repository');
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
 
@@ -125,6 +123,110 @@ describe('PUT /api/users/update/:id', ()=>{
                 address : "456 Main St",
                 password : "newpassword"
             }
+        })
+    })
+
+    it('should return 400 if request data is invalid', async()=>{
+        const response = await request(app)
+            .put("/api/users/update/1")
+            .set('Authorization', 'Bearer token')
+            .send({
+                name : 1,
+                email : "invalid-email-format",
+                address : 1,
+                password : 1
+            })
+        
+        expect(response.status).toBe(400);
+
+        expect(response.body).toEqual({
+            message : "Failed to update user",
+            error : expect.any(String)
+        })
+    })
+
+    it('should return 400 if the email is the same as the current one', async()=>{
+        usersService.update.mockRejectedValue(
+            new Error("Email already in use")
+        )
+
+        jwt.verify.mockReturnValue({
+            sub : 1
+        })
+
+        const response = await request(app)
+            .put("/api/users/update/1")
+            .set('Authorization', 'Bearer token')
+            .send({
+                email : "teste@gmail.com"
+            })
+
+        expect(response.status).toBe(400);
+
+        expect(response.body).toEqual({
+            message : "Failed to update user",
+            error : expect.any(String)
+        })
+
+        expect(usersService.update).toHaveBeenCalledWith({
+            targetId : 1,
+            requesterId : 1,
+            userData : {
+                email : "teste@gmail.com"
+            }
+        })
+    })
+})
+
+describe('DELETE /api/users/delete/:id', ()=>{
+    it('should delete user successfully', async()=>{
+        usersService.delete.mockResolvedValue(
+            true
+        );
+
+        jwt.verify.mockReturnValue({
+            sub : 1
+        });
+
+        const response = await request(app)
+            .delete('/api/users/delete/1')
+            .set('Authorization', 'Bearer token')
+        
+        expect(response.status).toBe(200);
+
+        expect(response.body).toEqual({
+            message : 'User deleted successfully',
+        })
+
+        expect(usersService.delete).toHaveBeenCalledWith({
+            targetId : 1,
+            requesterId : 1
+        })
+    })
+
+    it('should return 400 if user not found', async()=>{
+        usersService.delete.mockRejectedValue({
+            message : "User not found"
+        });
+
+        jwt.verify.mockReturnValue({
+            sub : 1
+        });
+
+        const response = await request(app)
+            .delete('/api/users/delete/1')
+            .set('Authorization', 'Bearer token')
+
+        expect(response.status).toBe(400);
+
+        expect(response.body).toEqual({
+            message : 'Failed to delete user',
+            error : expect.any(String)
+        })
+
+        expect(usersService.delete).toHaveBeenCalledWith({
+            targetId : 1,
+            requesterId : 1
         })
     })
 })

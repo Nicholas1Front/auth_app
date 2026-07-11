@@ -81,7 +81,7 @@ describe('GET /auth/me', ()=>{
         });
 
         // Mock the JWT for the request to simulate an authenticated user
-        jwt.verify.mockReturnValue({ id: 1 });
+        jwt.verify.mockReturnValue({ sub: 1 });
 
         /* request is a object like this :
         
@@ -109,6 +109,10 @@ describe('GET /auth/me', ()=>{
                 email : "teste@gmail.com"
             }
         });
+
+        expect(authService.me).toHaveBeenCalledWith(
+            1 // req.user.id
+        )
     })
 
     it('should return 400 if the req.user.id is not valid or found', async()=>{

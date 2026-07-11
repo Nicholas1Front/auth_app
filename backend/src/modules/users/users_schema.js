@@ -5,11 +5,7 @@ const registerUserSchema = z.object({
     email : z.string().email(),
     address : z.string().optional(),
     password : z.string()
-}).refine(
-    data =>
-        Object.values(data).some(value => value !== undefined),
-        {message: "At least one field must be provided for update"}
-)
+})
 
 const updateUserSchema = z.object({
     name : z.string().optional(),
