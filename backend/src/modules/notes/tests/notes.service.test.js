@@ -11,11 +11,6 @@ describe('notesService create', ()=>{
     })
 
     it('should create a note successfully', async()=>{
-        notesRepository.create.mockResolvedValue({
-            id : 1,
-            title : 'Note 1',
-            content : "Some content",
-            date_reference : 
-        })
+        
     })
 })

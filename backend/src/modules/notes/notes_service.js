@@ -1,5 +1,4 @@
 const notesRepository = require('./notes_repository');
-const usersService = require('../users/users_service');
 const usersRepository = require('../users/users_repository');
 
 class NotesService{
@@ -9,9 +8,16 @@ class NotesService{
         content,
         date_reference
     }){
-
         if(title === null){
-            title = `Note - user_id :${foundUser.id}`
+            const user = await usersRepository.find({
+                id : user_id
+            });
+
+            if(user.length === 0){
+                throw new Error('User not found')
+            }
+
+            title = `Note by ${user[0].name} - ${user[0].id}`
         }
 
         if(date_reference === null){
@@ -49,6 +55,10 @@ class NotesService{
 
         if(foundNote.length === 0){
             throw new Error('Note not found');
+        }
+
+        if(foundNote[0].deleted_at !== null){
+            throw new Error('Note deactivated - cannot be updated')
         }
 
         foundNote = foundNote[0];
