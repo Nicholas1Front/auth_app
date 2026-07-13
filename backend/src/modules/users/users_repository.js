@@ -26,15 +26,15 @@ class UsersRepository{
     }){
         const query = knex('users');
 
-        if(id !== null){
+        if(id !== undefined){
             query.where('id', id);
         }
 
-        if(email !== null){
+        if(email !== undefined){
             query.where('email', email);
         }
 
-        if(name !== null){
+        if(name !== undefined){
             query.where('name', name);
         }
 
