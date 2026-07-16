@@ -42,12 +42,12 @@ class NotesRepository{
     }){
         const query = knex('notes');
 
-        if(includedDeleted || includedDeleted !== null){
-            query.whereNull("includedDeleted")
+        if(includedDeleted === false){
+            query.whereNull('deleted_at');
         }
 
-        if(!includedDeleted || includedDeleted === null){
-            query.whereNotNull("includedDeleted")
+        if(includedDeleted === true){
+            query.whereNotNull('deleted_at')
         }
 
         if(id !== null){

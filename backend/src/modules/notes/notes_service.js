@@ -22,11 +22,11 @@ class NotesService{
 
         if(date_reference === null){
             let actualDate = new Date();
-            date_reference = actualDate.toISOString().split('T')
+            date_reference = actualDate
         }
 
         if(date_reference !== null){
-            date_reference = new Date(date_reference).toISOString().split('T')
+            date_reference = new Date(date_reference)
         }
 
         const note = await notesRepository.create({
@@ -76,7 +76,7 @@ class NotesService{
         }
 
         if(noteData.date_reference !== null){
-            foundNote.date_reference = noteData.date_reference.toISOString().split('T');
+            foundNote.date_reference = new Date(noteData.date_reference);
         }
 
         const updatedNote = await notesRepository.update({
@@ -104,6 +104,13 @@ class NotesService{
         date_reference_end,
         includedDeleted
     }){
+
+        if(includedDeleted === null){
+            includedDeleted = false
+        }else{
+            includedDeleted = true
+        }
+
         const notes = await notesRepository.find({
             user_id,
             id,
@@ -132,6 +139,10 @@ class NotesService{
             throw new Error('Unauthorized access');
         }
 
+        if(foundNote[0].deleted_at !== null){
+            throw new Error('Note already deactivated');
+        }
+
         const deactivatedNote = await notesRepository.deactivate(id);
 
         if(!deactivatedNote){
@@ -155,6 +166,10 @@ class NotesService{
 
         if(foundNote[0].user_id !== requesterId){
             throw new Error('Unauthorized access');
+        }
+
+        if(foundNote[0].deleted_at === null){
+            throw new Error('Note already activated');
         }
 
         const activatedNote = await notesRepository.activate(id);

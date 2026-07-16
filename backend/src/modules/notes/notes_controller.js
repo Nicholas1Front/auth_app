@@ -19,7 +19,7 @@ class NotesController{
             });
 
             return res.status(200).json({
-                messageg : 'Note created successfully',
+                message : 'Note created successfully',
                 data : note
             })
         }catch(err){
