@@ -107,8 +107,6 @@ class NotesService{
 
         if(includedDeleted === null){
             includedDeleted = false
-        }else{
-            includedDeleted = true
         }
 
         const notes = await notesRepository.find({

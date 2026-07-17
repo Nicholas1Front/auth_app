@@ -12,7 +12,7 @@ class NotesController{
             let data = createNoteSchema.parse(req.body);
 
             const note = await notesService.create({
-                user_id : Number(req.user.id),
+                user_id : req.user.id,
                 title : data.title,
                 content : data.content,
                 date_reference : data.date_reference
@@ -54,11 +54,14 @@ class NotesController{
 
     async findUserNotes(req,res){
         try{
-            const data = findUserNotesSchema.parse(req.query);
+            let data = findUserNotesSchema.parse(req.query);
 
             const notes = await notesService.findFromUser({
                 user_id : req.user.id,
-                ...data
+                title : data.title,
+                date_reference_start : data.date_reference_start,
+                date_reference_end : data.date_reference_end,
+                includedDeleted : data.includedDeleted
             });
 
             return res.status(200).json({
